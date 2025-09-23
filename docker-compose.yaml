@@ -1,0 +1,6 @@
+services:
+  bot:
+    build: .
+    volumes:
+      - "./.env:/app/src/.env:ro"
+      - "./db.db:/app/src/db.db"
