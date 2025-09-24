@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from sqlalchemy import (
     BigInteger,
+    Boolean,
     Column,
     Float,
     ForeignKey,
@@ -135,3 +136,21 @@ class BalanceModel(BaseWithID, BaseWithDate):
     @property
     def type_readable(self) -> str:
         return {"income": "Доход", "expense": "Расход"}.get(self.type, self.type)
+
+
+class MovieModel(BaseWithID, BaseWithDate):
+    __tablename__ = "movies"
+
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(String)
+    year: Mapped[int] = mapped_column(Integer, nullable=False)
+    poster: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    source: Mapped[Optional[str]] = mapped_column(
+        String(50), nullable=True
+    )  # tmdb / kinopoisk
+    external_id: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    watched: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+
+    @property
+    def status(self) -> str:
+        return "Просмотренно" if self.watched else "Хочу посмотреть"
