@@ -28,7 +28,6 @@ class AddSeries(StatesGroup):
     photo = State()
     description = State()
     season_number = State()
-    episodes_count = State()
 
 
 def build_series_preview_msg() -> str:
@@ -51,7 +50,7 @@ def format_series_message(series: SeriesModel, status_text: str) -> str:
         f"📺 <b>{series.title}</b>\n"
         f"📅 Год: <i>{series.year or '—'}</i>\n"
         f"📦 Статус: <b>{status_text}</b>\n"
-        f"📊 Сезон: <b>{series.season_current or series.season_number or '—'}</b> / "
+        f"📊 Сезон: <b>{series.season_current or '—'}</b> / "
         f"Эпизод: <b>{series.episode_current or '—'}</b>\n"
         f"🗓 Последнее обновление: <i>{series.updated_at_readable}</i>\n\n"
         f"📝 <b>Описание:</b>\n{series.description or 'Описание отсутствует.'}"
@@ -451,33 +450,11 @@ async def handle_series_seasons(message: Message, state: FSMContext) -> None:
         )
         return
 
-    await state.update_data(season_number=season_number)
-    await state.set_state(AddSeries.episodes_count)
-
-    await message.answer(build_add_series_msg("episodes_count"))
-
-
-@router.message(AddSeries.episodes_count)
-async def handle_series_episodes(message: Message, state: FSMContext) -> None:
-    if not message.text or not message.text.isdigit():
-        await message.answer(
-            "❌ Количество эпизодов должно быть числом. Введи количество эпизодов:"
-        )
-        return
-
-    episodes_count = int(message.text)
-    if episodes_count <= 0:
-        await message.answer(
-            "❌ Количество эпизодов должно быть больше 0. Введи количество эпизодов:"
-        )
-        return
-
     data = await state.get_data()
     title = data["title"]
     photo = data["photo"]
     year = data["year"]
     description = data["description"]
-    season_number = data["season_number"]
 
     async with get_session() as session:
         sr = SeriesRepository(session)
@@ -487,7 +464,6 @@ async def handle_series_episodes(message: Message, state: FSMContext) -> None:
             description=description,
             poster=photo,
             season_number=season_number,
-            episodes_count=episodes_count,
             watch_status="planned",
         )
         await session.commit()
