@@ -634,7 +634,7 @@ async def handle_series_next_episode(clbq: CallbackQuery) -> None:
             series,
             (
                 f"📺 Смотрю (эпизод {series.episode_current} / "
-                "сезон {series.season_current or 1})"
+                f"сезон {series.season_current or 1})"
             ),
         )
 
