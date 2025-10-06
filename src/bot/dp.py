@@ -14,7 +14,7 @@ dp.include_router(router)
 
 
 @dp.update.outer_middleware()  # type: ignore
-async def database_transaction_middleware(
+async def allowed_users_middleware(
     handler: Callable[[Update, Dict[str, Any]], Awaitable[Any]],
     event: Update,
     data: Dict[str, Any],

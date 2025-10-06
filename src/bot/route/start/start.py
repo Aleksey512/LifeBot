@@ -25,6 +25,7 @@ def get_start_kb(cur_user_id: int = -1) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.row(InlineKeyboardButton(text="💰 Баланс", callback_data="balance"))
     builder.row(InlineKeyboardButton(text="🎬 Фильмы", callback_data="movies"))
+    builder.row(InlineKeyboardButton(text="🎥 Сериалы", callback_data="series"))
     if cur_user_id in settings.ADMIN_IDS:
         builder.row(InlineKeyboardButton(text="Admin", callback_data="admin"))
     return builder.as_markup()

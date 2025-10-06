@@ -154,3 +154,34 @@ class MovieModel(BaseWithID, BaseWithDate):
     @property
     def status(self) -> str:
         return "Просмотренно" if self.watched else "Хочу посмотреть"
+
+
+class SeriesModel(BaseWithID, BaseWithDate):
+    __tablename__ = "series"
+
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(String)
+    year: Mapped[int] = mapped_column(Integer, nullable=False)
+    poster: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    source: Mapped[Optional[str]] = mapped_column(
+        String(50), nullable=True
+    )  # tmdb / kinopoisk
+    external_id: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    watched: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    watch_status: Mapped[Optional[str]] = mapped_column(
+        String(20), nullable=True
+    )  # 'watching', 'completed', 'planned'
+    season_number: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    episodes_count: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    episode_current: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    season_current: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    @property
+    def status(self) -> str:
+        if self.watch_status == "completed":
+            return "Просмотрено"
+        if self.watch_status == "watching":
+            return "Смотрю"
+        if self.watch_status == "planned":
+            return "Запланировано"
+        return "Просмотренно" if self.watched else "Хочу посмотреть"
